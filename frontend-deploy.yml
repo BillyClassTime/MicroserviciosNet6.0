@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pizzafrontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pizzafrontend
+    spec:
+      containers:
+      - name: pizzafronend
+        image: billyclasstime/pizzafrontend
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8085
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://*:8085
+        - name: backendUrl
+          value: http://pizzabackend:8085
+  selector:
+    matchLabels:
+      app: pizzafrontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzafrontend
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8085
+  selector:
+    app: pizzafrontend
+
